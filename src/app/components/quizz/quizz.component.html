@@ -5,14 +5,16 @@
     </div>
 
     <div class="quizz_questions">
-        <h3>{{questionSelected}}</h3>
+        <h3>{{questionSelected.question}}</h3>
     </div>
 
     <div class="quizz_options">
-        <button class="btn_option">optionname</button>
+        @for (option of questionSelected.options; track $index) {
+            <button class="btn_option" (click)="playerChoose(option.alias)" (click)="nextStep()">{{option.name}}</button>
+        }
     </div>
 
-    @if (!finished) {
+    @if (finished) {
         <div class="quizz_results">
             <h1>O seu resultado é:</h1>
             <p>Resposta Selecionada</p>
