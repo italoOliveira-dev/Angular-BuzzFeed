@@ -8,7 +8,7 @@ import quizz_questions from '../../../assets/data/quizz_questions.json';
     templateUrl: './quizz.component.html',
     styleUrl: './quizz.component.css'
 })
-export class QuizzComponent implements OnInit{
+export class QuizzComponent implements OnInit {
 
     title: string = '';
 
@@ -24,7 +24,7 @@ export class QuizzComponent implements OnInit{
     finished: boolean = false;
 
     ngOnInit(): void {
-        if(quizz_questions) {
+        if (quizz_questions) {
             this.finished = false;
             this.title = quizz_questions.title;
 
@@ -38,16 +38,34 @@ export class QuizzComponent implements OnInit{
 
     playerChoose(value: string) {
         this.answers.push(value);
+        this.nextStep()
     }
 
     async nextStep() {
         this.questionIndex += 1;
 
-        if(this.questionMaxIndex > this.questionIndex) {
+        if (this.questionMaxIndex > this.questionIndex) {
             this.questionSelected = this.questions[this.questionIndex]
         } else {
+            const finalAnswer: string = await this.chackResult(this.answers);
             this.finished = true;
+            this.answersSelected = quizz_questions.results[finalAnswer as keyof typeof quizz_questions.results]
         }
+    }
+
+    async chackResult(anwsers: string[]) {
+        const result = anwsers.reduce((previous, current, index, array) => {
+            if (
+                array.filter(item => item === previous).length >
+                array.filter(item => item === current).length
+            ) {
+                return previous
+            } else {
+                return current
+            }
+        })
+
+        return result
     }
 
 }
